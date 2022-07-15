@@ -9,6 +9,31 @@ description: Checks if a given email address is valid
 import requests
 import sqlite3
 
+
+"""
+the full program running once 
+"""
+"""
+def main():
+
+    """"""
+    print("Type 1 to log in and 2 to sign up")
+    action = None
+    while action not in (1, 2):
+        action = input("> ")
+        if action.isdigit() and int(action) == 1:
+            log_in(input("Email: "))
+            break
+        elif action.isdigit() and int(action) == 2:
+            sign_up(input("Email: "))
+            break
+        else:
+            print("Please type a valid option")
+
+
+    """
+
+
 """
 email - the email the user wants to sign up with
 get_email - returns true if the email given is valid and false otherwise
@@ -146,24 +171,6 @@ def sign_up(email):
         password_valid = secure_password(input("Password: "))
 
     return make_account(email_valid, password_valid)
-        
-"""
-the full program running once 
-"""
-def main():
-    print("Type 1 to log in and 2 to sign up")
-    action = None
-    while action not in (1, 2):
-        action = input("> ")
-        if action.isdigit() and int(action) == 1:
-            log_in(input("Email: "))
-            break
-        elif action.isdigit() and int(action) == 2:
-            sign_up(input("Email: "))
-            break
-        else:
-            print("Please type a valid option")
-
 
 if __name__ == '__main__':
     main()

@@ -1,8 +1,31 @@
-from Database import *
-from UserInput import *
-from Api import *
+
+from database import *
+from login import *
+from api import *
+from user_input import *
 
 def main():
+
+    print("Type 1 to log in and 2 to sign up")
+    action = None
+    while action not in (1, 2):
+        action = input("> ")
+        if action.isdigit() and int(action) == 1:
+            log_in(input("Email: "))
+            break
+        elif action.isdigit() and int(action) == 2:
+            sign_up(input("Email: "))
+            break
+        else:
+            print("Please type a valid option")
+
+
+    #Run user input
+    getInput()
+    format_sentence(text)
+    inputItem()
+
+
     database = connectDatabase()
 
     if not checkDatabase(database):

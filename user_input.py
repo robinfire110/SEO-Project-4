@@ -7,24 +7,22 @@ from phonenumbers import timezone
 # Automatically note the dates for the food items input. 
 
 #Notifood UI 
- 
+def getInput():
+    name = input("Enter your full name: ")
 
-name = input("Enter your full name: ")
-
-# Program to convert input to
-# phonenumber format
-  
-# Parsing String to Phone number
-# Phone number format: (+Countrycode)xxxxxxxxxx
-digit = input("Enter your digits in the format (+Countrycode)xxxxxxxxxx: ")
-phoneNumber = phonenumbers.parse(digit)
-# Pass the parsed phone number in below function
-timeZone = timezone.time_zones_for_number(phoneNumber)
-# This will print the phone number and 
-# it's basic details.
-print(phoneNumber)
-print(timeZone)
-
+    # Program to convert input to
+    # phonenumber format
+    
+    # Parsing String to Phone number
+    # Phone number format: (+Countrycode)xxxxxxxxxx
+    digit = input("Enter your digits in the format (+Countrycode)xxxxxxxxxx: ")
+    phoneNumber = phonenumbers.parse(digit)
+    # Pass the parsed phone number in below function
+    timeZone = timezone.time_zones_for_number(phoneNumber)
+    # This will print the phone number and 
+    # it's basic details.
+    print(phoneNumber)
+    print(timeZone)
 
 text = """ Available categories of food items are:
     Fruits — Apples, bananas, etc. 
@@ -46,7 +44,6 @@ text = """ Available categories of food items are:
 
 def format_sentence(sentence):
     print(sentence.replace('. ', '.\n'))
-format_sentence(text)
 
 
 Grocery = []
@@ -82,51 +79,53 @@ item.append([])
 item.append([])
 item.append([])
 
-i = 0
-while True:
-    Name = input("Name of item: ")
-    if Name == "":
-        break
-    else:
-        category = input("Category: ")
-        Purchase_date = input("Date purchased(Year-month-date): ")
-        Expiration_date = input("Expiration date(Year-month-date): ")
-        item[i].append(Name)
-        item[i].append(category)
-        item[i].append(Purchase_date)
-        item[i].append(Expiration_date)
-        
-        if item[i][1].capitalize() == 'Fruits':
-            Fruits.append(item[i])
-        if item[i][1].capitalize() == 'Vegetables':
-            Vegetables.append(item[i])
-        elif item[i][1].capitalize() == 'Canned goods':
-            Canned_Goods.append(item[i])
-        elif item[i][1].capitalize() == 'Dairy':
-            Dairy.append(item[i])
-        elif item[i][1].capitalize() == 'Meat':
-            Meat.append(item[i])
-        elif item[i][1].capitalize() == 'Fish and Seafood':
-            Fish_and_Seafood.append(item[i])
-        elif item[i][1].capitalize() == 'Deli':
-            Deli.append(item[i])
-        elif item[i][1].capitalize() == 'Condiments and Spices':
-            Condiments_and_Spices.append(item[i])
-        elif item[i][1].capitalize() == 'Snacks':
-            Snacks.append(item[i])
-        elif item[i][1].capitalize() == 'Bread and Bakery':
-            Bread_and_Bakery.append(item[i])
-        elif item[i][1].capitalize() == 'Beverages':
-            Beverages.append(item[i])
-        elif item[i][1].capitalize() == 'Pasta, Rice, and Cereal':
-            Pasta_Rice_Cereal.append(item[i])
-        elif item[i][1].capitalize() == 'Baking':
-            Baking.append(item[i])
-        elif item[i][1].capitalize() == 'Frozen foods':
-            Frozen_Foods.append(item[i])
-        
-        i+=1
+def inputItem():
+    i = 0
+    while True:
+        Name = input("Name of item: ")
+        if Name == "":
+            break
+        else:
+            category = input("Category: ")
+            Purchase_date = input("Date purchased(Year-month-date): ")
+            Expiration_date = input("Expiration date(Year-month-date): ")
+            item[i].append(Name)
+            item[i].append(category)
+            item[i].append(Purchase_date)
+            item[i].append(Expiration_date)
+            
+            if item[i][1].capitalize() == 'Fruits':
+                Fruits.append(item[i])
+            if item[i][1].capitalize() == 'Vegetables':
+                Vegetables.append(item[i])
+            elif item[i][1].capitalize() == 'Canned goods':
+                Canned_Goods.append(item[i])
+            elif item[i][1].capitalize() == 'Dairy':
+                Dairy.append(item[i])
+            elif item[i][1].capitalize() == 'Meat':
+                Meat.append(item[i])
+            elif item[i][1].capitalize() == 'Fish and Seafood':
+                Fish_and_Seafood.append(item[i])
+            elif item[i][1].capitalize() == 'Deli':
+                Deli.append(item[i])
+            elif item[i][1].capitalize() == 'Condiments and Spices':
+                Condiments_and_Spices.append(item[i])
+            elif item[i][1].capitalize() == 'Snacks':
+                Snacks.append(item[i])
+            elif item[i][1].capitalize() == 'Bread and Bakery':
+                Bread_and_Bakery.append(item[i])
+            elif item[i][1].capitalize() == 'Beverages':
+                Beverages.append(item[i])
+            elif item[i][1].capitalize() == 'Pasta, Rice, and Cereal':
+                Pasta_Rice_Cereal.append(item[i])
+            elif item[i][1].capitalize() == 'Baking':
+                Baking.append(item[i])
+            elif item[i][1].capitalize() == 'Frozen foods':
+                Frozen_Foods.append(item[i])
+            
+            i+=1
 
+"""
 print("Fruits available are: " Fruits)
 print("Vegetables available are: " Vegetables)
 print("Canned goods available are: " Canned_Goods)
@@ -141,3 +140,4 @@ print("Beverages available are: " Beverages)
 print("Pasta, Rice, and Ceral items available are: " Pasta_Rice_Cereal)
 print("Baking items available are: " Baking)
 print("Frozen foods available are: " Frozen_Foods)
+"""
