@@ -58,14 +58,13 @@ make_account - creates an account for a user and holds that data
 returns false if an account is already made and true if the account
 was created 
 """
-def make_account(phone_number, password, name):
+def make_account(phone_number, password):
     conn = sqlite3.connect('accounts.db')
     cursor = conn.cursor()
 
     sql = '''CREATE TABLE IF NOT EXISTS ACCOUNTS(
     PHONE VARCHAR(255),
-    PASSWORD VARCHAR(255),
-    NAME VARCHAR(255)
+    PASSWORD VARCHAR(255)
     )'''
     cursor.execute(sql)
 
@@ -78,8 +77,8 @@ def make_account(phone_number, password, name):
         return False
     else:
         cursor.execute('''INSERT INTO ACCOUNTS(
-        PHONE, PASSWORD, NAME) VALUES 
-        (?, ?, ?)''', (phone_number, password, name))
+        PHONE, PASSWORD) VALUES 
+        (?, ?)''', (phone_number, password))
 
     conn.commit()
     cursor.execute("SELECT * FROM ACCOUNTS")
@@ -118,11 +117,12 @@ def log_in(phone_number):
             return phone_number
     except:
         print("Please enter an existing phone number, or type 2 to sign up")
+        return False
 
     conn.close()
 
 """
-sigh_up contuines to prompt the user for an phone numbe  until they give a valid phone number
+sigh_up contuines to prompt the user for an phone number until they give a valid phone number
 after that they have to create a secure password
 """
 def sign_up(phone_number):
@@ -136,8 +136,7 @@ def sign_up(phone_number):
     while not password_valid:
         password_valid = secure_password(input("Password: "))
 
-    name = input("Name: ")
-    return make_account(phone_valid, password_valid, name)
+    return make_account(phone_valid, password_valid)
 
 """
 Returns all account data

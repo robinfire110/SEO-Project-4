@@ -30,7 +30,7 @@ def main():
 
     #Run user input
     #getInput()
-    format_sentence(text)
+    #format_sentence(text)
     #inputItem()
 
 
@@ -48,10 +48,8 @@ def main():
         name = input("Name: ")
         if name == "":
             break
-        category = input("Category: ")
-        purchase_date = input("Date purchased(Year-month-date): ")
         expiration_date = input("Expiration date(Year-month-date): ")
-        add_food_item(database, phone_number, name, category, purchase_date, expiration_date)
+        add_food_item(database, phone_number, name, expiration_date)
 
     print("Current Food:")
     print_database(database, phone_number)
@@ -73,8 +71,6 @@ def main():
             add_food_item(
                 database,
                 new_item.get("item_name"),
-                new_item.get("item_category"),
-                new_item.get("purchase_date"),
                 new_item.get("expiration_date")
             )
         elif next_job == "Remove item":

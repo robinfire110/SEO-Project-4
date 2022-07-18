@@ -86,12 +86,8 @@ def inputItem():
         if Name == "":
             break
         else:
-            category = input("Category: ")
-            Purchase_date = input("Date purchased(Year-month-date): ")
             Expiration_date = input("Expiration date(Year-month-date): ")
             item[i].append(Name)
-            item[i].append(category)
-            item[i].append(Purchase_date)
             item[i].append(Expiration_date)
             
             if item[i][1].capitalize() == 'Fruits':

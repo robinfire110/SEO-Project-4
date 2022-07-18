@@ -26,29 +26,23 @@ def create_table(engine, phone_number):
         f"""
             CREATE TABLE '{phone_number}'(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                purchase_date DATE,
                 expiration_date DATE,
-                item_name VARCHAR(100),
-                item_category VARCHAR(40)
+                item_name VARCHAR(100)
             );
         """
     )
 
 
-def add_food_item(engine, phone_number, name, category, purchase_date, expiration_date):
+def add_food_item(engine, phone_number, name, expiration_date):
     """Adds a food item to the database"""
     engine.execute(
         f"""
             INSERT INTO '{phone_number}'(
-                purchase_date,
                 expiration_date,
-                item_name,
-                item_category)
+                item_name)
             VALUES(
-                \'{purchase_date}\',
                 \'{expiration_date}\',
-                \'{name}\',
-                \'{category}\'
+                \'{name}\'
             );
         """
     )
