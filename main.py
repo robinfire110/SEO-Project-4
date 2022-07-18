@@ -4,43 +4,73 @@ from login import *
 from api import *
 from user_input import *
 
+
 def main():
 
-    print("Type 1 to log in and 2 to sign up")
+    phone_number = ""
+    database = connect_database()
     action = None
     while action not in (1, 2):
+        print("Type 1 to log in and 2 to sign up")
         action = input("> ")
         if action.isdigit() and int(action) == 1:
-            log_in(input("Email: "))
-            break
+            phone_number = log_in(input("Phone Number: "))
+            if phone_number != False:
+                break
         elif action.isdigit() and int(action) == 2:
-            sign_up(input("Email: "))
-            break
+            phone_number = sign_up(input("Phone Number: "))
+            if phone_number != False:
+                create_table(database, phone_number)
+                break
         else:
             print("Please type a valid option")
 
+    print(get_all_login_data())
+
 
     #Run user input
-    getInput()
+    #getInput()
     format_sentence(text)
-    inputItem()
+    #inputItem()
 
 
-    database = connectDatabase()
-
-    if not checkDatabase(database):
+    '''
+    print_database(database, phone_number)
+    if not check_database(database):
         print("No previous database detected, creating new database...")
-        num = prompt(phone_number, style=custom_style_2).get("phone_number")
-        createTable(database, num)
+        num = phone_number#prompt(phone_number, style=custom_style_2).get("phone_number")
+        create_table(database, num)
     else:
         print("Existed database detectesd, using existing database...")
+    '''
     
+    while True:
+        name = input("Name: ")
+        if name == "":
+            break
+        category = input("Category: ")
+        purchase_date = input("Date purchased(Year-month-date): ")
+        expiration_date = input("Expiration date(Year-month-date): ")
+        add_food_item(database, phone_number, name, category, purchase_date, expiration_date)
+
+    print("Current Food:")
+    print_database(database, phone_number)
+
+    while True:
+        name = input("Delete Item Name: ")
+        if name == "":
+            break
+        remove_food_item(database, phone_number, name)
+
+    
+    
+    """
     while(True):
         next_job = prompt(program_options, style=custom_style_2).get("program")
 
         if next_job == "Add item":
             new_item = prompt(add_options, style=custom_style_2)
-            addFoodItem(
+            add_food_item(
                 database,
                 new_item.get("item_name"),
                 new_item.get("item_category"),
@@ -49,14 +79,16 @@ def main():
             )
         elif next_job == "Remove item":
             remove_item = prompt(remove_options, style=custom_style_2)
-            removeFoodItem(database, remove_item.get("item_name"))
+            remove_food_item(database, remove_item.get("item_name"))
         elif next_job == "List items":
-            printDatabase(database)
+            print_database(database)
         else:
             break
+    """
     
-    food = getFoodToExpire(database)
-    sendMessage(food)
+    print_database(database, phone_number)
+    #food = get_food_to_expire(database, phone_number)
+    #sendMessage(phone_number, food)
 
 if __name__ == "__main__":
     main()

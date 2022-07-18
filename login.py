@@ -1,8 +1,8 @@
 """
-file: email_validator.py
+file: login.py
 author: Emmanuel Griffin
 author: Nicole de Moura
-description: Checks if a given email address is valid
+description: Checks if a given phone number is valid
              Checks if a given password is secure
 """
 
@@ -11,51 +11,15 @@ import sqlite3
 
 
 """
-the full program running once 
+phone number - the phone number the user wants to sign up with
+check_valid_phone - returns true if the phone number given is valid and false otherwise
 """
-"""
-def main():
-
-    """"""
-    print("Type 1 to log in and 2 to sign up")
-    action = None
-    while action not in (1, 2):
-        action = input("> ")
-        if action.isdigit() and int(action) == 1:
-            log_in(input("Email: "))
-            break
-        elif action.isdigit() and int(action) == 2:
-            sign_up(input("Email: "))
-            break
-        else:
-            print("Please type a valid option")
-
-
-    """
-
-
-"""
-email - the email the user wants to sign up with
-get_email - returns true if the email given is valid and false otherwise
-"""
-def get_email(email):
-    url = "https://mailcheck.p.rapidapi.com/"
-
-    querystring = {"domain": email}
-
-    headers = {
-        "X-RapidAPI-Key": "84e3b5a6f6mshfa61e64adee66a3p1c8d48jsn7f6087e0f0cd",
-        "X-RapidAPI-Host": "mailcheck.p.rapidapi.com"
-    }
-
-    response = requests.request(
-        "GET", url, headers=headers, params=querystring)
-    valid = response.json().get("valid")
-    if valid:
-        print("Valid email")
-        return email
+def check_valid_phone(phone_number):
+    if phone_number.isdigit():
+        print("Valid Number")
+        return phone_number
     else:
-        print("Invalid email, try again")
+        print("Invalid Number, please remove any '-' or '+' symbols.")
         return False
 
 """
@@ -88,34 +52,34 @@ def secure_password(password):
         return False
 
 """
-email - the email the user wants to make an account with
+phone number - the phone number the user wants to make an account with
 password - the password the user wants to make an account with
 make_account - creates an account for a user and holds that data
 returns false if an account is already made and true if the account
 was created 
 """
-def make_account(email, password):
+def make_account(phone_number, password, name):
     conn = sqlite3.connect('accounts.db')
-
     cursor = conn.cursor()
 
     sql = '''CREATE TABLE IF NOT EXISTS ACCOUNTS(
-    EMAIL VARCHAR(255),
-    PASSWORD VARCHAR(255)
+    PHONE VARCHAR(255),
+    PASSWORD VARCHAR(255),
+    NAME VARCHAR(255)
     )'''
     cursor.execute(sql)
 
-    cursor.execute("SELECT EMAIL FROM ACCOUNTS WHERE EMAIL = ?", (email,))
+    cursor.execute("SELECT PHONE FROM ACCOUNTS WHERE PHONE = ?", (phone_number,))
     exists = cursor.fetchone()
 
     if exists:
-        print("An account with this email already exists, login instead")
+        print("An account with this phone number already exists, login instead")
         conn.close()
         return False
     else:
         cursor.execute('''INSERT INTO ACCOUNTS(
-        EMAIL, PASSWORD) VALUES 
-        (?, ?)''', (email, password))
+        PHONE, PASSWORD, NAME) VALUES 
+        (?, ?, ?)''', (phone_number, password, name))
 
     conn.commit()
     cursor.execute("SELECT * FROM ACCOUNTS")
@@ -123,54 +87,76 @@ def make_account(email, password):
           cursor.fetchall()[-1])
 
     conn.close()
-    return True
+    return phone_number
 
 """
-simulates a login, the user inputs an email, if you have signed
-in before with the same email you successfully have logged in
-if the email doesn't exist in our database (so you haven't signed up before)
-you will be prompted to try another email that has signed up or sign up now
+simulates a login, the user inputs an phone number, if you have signed
+in before with the same phone number you successfully have logged in
+if the phone number doesn't exist in our database (so you haven't signed up before)
+you will be prompted to try another phone number that has signed up or sign up now
 returns true if you sign up and false if you login
 """
-def log_in(email):
+def log_in(phone_number):
     conn = sqlite3.connect('accounts.db')
 
     cursor = conn.cursor()
 
-    
-    if email.isdigit() and int(email) == 2:
+    '''
+    if phone_number.isdigit():
         print("Signing up . . .")
-        return sign_up()
+        return sign_up(phone_number)
+    '''
             
     try:
         cursor.execute(
-            "SELECT EMAIL FROM ACCOUNTS WHERE EMAIL = ?", (email,))
+            "SELECT PHONE FROM ACCOUNTS WHERE PHONE = ?", (phone_number,))
         if len(cursor.fetchall()) < 1:
             raise Exception()
+            return False
         else:
             print("Login success")
-            return False
+            return phone_number
     except:
-        print("Please enter an existing email address, or type 2 to sign up")
+        print("Please enter an existing phone number, or type 2 to sign up")
 
     conn.close()
 
 """
-sigh_up contuines to prompt the user for an email until they give a valid email
+sigh_up contuines to prompt the user for an phone numbe  until they give a valid phone number
 after that they have to create a secure password
 """
-def sign_up(email):
-    email_valid = get_email(email)
-    while not email_valid:
-        email = input("Email: ")
-        email_valid = get_email(email)
+def sign_up(phone_number):
+    phone_valid = check_valid_phone(phone_number)
+    while not phone_valid:
+        phone = input("Phone Number: ")
+        phone_valid = check_valid_phone(phone)
 
     print("Secure password requirements: Must be 8 characters or longer, must include one number, and one special character")
     password_valid = secure_password(input("Password: "))
     while not password_valid:
         password_valid = secure_password(input("Password: "))
 
-    return make_account(email_valid, password_valid)
+    name = input("Name: ")
+    return make_account(phone_valid, password_valid, name)
 
-if __name__ == '__main__':
-    main()
+"""
+Returns all account data
+"""
+def get_all_login_data():
+    conn = sqlite3.connect('accounts.db')
+    cursor = conn.cursor()
+    sql_query = """SELECT * FROM ACCOUNTS;"""
+    cursor.execute(sql_query)
+    return cursor.fetchall()
+
+"""
+Returns row asscoatiated with given phone number, None if there is no row under given number
+phone_number - phone_number to search for
+"""
+def get_login_data_by_number(phone_number):
+    conn = sqlite3.connect('accounts.db')
+    cursor = conn.cursor()
+    sql_query = f"""SELECT * FROM ACCOUNTS WHERE PHONE = {phone_number};"""
+    cursor.execute(sql_query)
+    return cursor.fetchall()
+    

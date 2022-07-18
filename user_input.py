@@ -8,7 +8,7 @@ from phonenumbers import timezone
 
 #Notifood UI 
 def getInput():
-    name = input("Enter your full name: ")
+    #name = input("Enter your full name: ")
 
     # Program to convert input to
     # phonenumber format
