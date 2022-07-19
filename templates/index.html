@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Responsive Table + Detail View</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel="stylesheet" href="../static/css/style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<h1>
+  My Items
+</h1>
+<p>
+</p>
+<main>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          Food Item
+        </th>
+        <th>
+          Expiration Date
+        </th>
+        <th>Remove</th>
+      </tr>
+    </thead>
+    <tbody id="table"></tbody>
+    <tfoot>
+      <tr>
+        <th colspan='3'>
+          Notifood
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+  </div>
+</main>
+<!-- partial -->
+<script> 
+    //Variables
+    const dataString = '[[4, "2020-10-05 00:00:00", "Oranges"], [8, "2022-07-19 00:00:00", "Apples"], [9, "2022-07-23 00:00:00", "Beef"], [10, "2020-10-05 00:00:00", "Grapes"]]'
+    const table = document.getElementById('table');
+    const data = JSON.parse(dataString);
+    console.log(data);
+
+    //Create Table
+    for (i = 0; i < data.length; i++) {
+      currentData = data[i];
+      html = "";
+      html += "<tr>";
+      html += `<td>${currentData[2]}</td>`;
+      html += `<td>${(currentData[1]).replace(" 00:00:00", "")}</td>`;
+      html += `<td><a class='button' href='#' id='${currentData[2]}'>Remove</a></td>`;
+      html += "</tr>";
+      table.innerHTML += html;  
+    }
+
+    //Remove from database
+    function remove(name) {
+
+    }
+
+
+    
+  </script>
+  
+</body>
+</html>
+
+
