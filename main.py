@@ -3,6 +3,7 @@ from database import *
 from login import *
 from api import *
 from user_input import *
+import datetime
 
 
 def main():
@@ -26,6 +27,7 @@ def main():
             print("Please type a valid option")
 
     print(get_all_login_data())
+    print(database_to_json(database, phone_number))
 
 
     #Run user input
@@ -48,8 +50,11 @@ def main():
         name = input("Name: ")
         if name == "":
             break
-        expiration_date = input("Expiration date(Year-month-date): ")
-        add_food_item(database, phone_number, name, expiration_date)
+        expiration_date = input("Expiration date(MM-DD-YYYY): ")
+        expiration_date.lstrip("0")
+        expiration_date = expiration_date.split("-")
+        print(expiration_date)
+        add_food_item(database, phone_number, name, datetime.datetime(int(expiration_date[2]), int(expiration_date[0]), int(expiration_date[1])))
 
     print("Current Food:")
     print_database(database, phone_number)

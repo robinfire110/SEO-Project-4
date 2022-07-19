@@ -35,17 +35,21 @@ def create_table(engine, phone_number):
 
 def add_food_item(engine, phone_number, name, expiration_date):
     """Adds a food item to the database"""
-    engine.execute(
-        f"""
-            INSERT INTO '{phone_number}'(
-                expiration_date,
-                item_name)
-            VALUES(
-                \'{expiration_date}\',
-                \'{name}\'
-            );
-        """
-    )
+    #Check for already existing item
+    if not check_food_name(engine, phone_number, name):
+        engine.execute(
+            f"""
+                INSERT INTO '{phone_number}'(
+                    expiration_date,
+                    item_name)
+                VALUES(
+                    \'{expiration_date}\',
+                    \'{name}\'
+                );
+            """
+        )
+    else:
+        print("Item with this name already exists!")
 
 
 def remove_food_item(engine, phone_number, name):
@@ -66,6 +70,27 @@ def print_database(engine, phone_number):
     query_result = engine.execute(f"SELECT * FROM '{phone_number}';").fetchall()
     print(pd.DataFrame(query_result))
 
+def database_to_json(engine, phone_number):
+    """https://medium.com/@PyGuyCharles/python-sql-to-json-and-beyond-3e3a36d32853"""
+    conn = sqlite3.connect('Notifood.db')
+    cursor = conn.cursor()
+    query = f"SELECT * FROM '{phone_number}'"
+    res = cursor.execute(query)
+    
+    return json.dumps(cursor.fetchall())
+    """
+    items = []
+
+    for row in res:
+        for key in cursor.description:
+            items.append({key[0]: value for value in row})
+
+    return json.dumps({'items': items})
+    """
+
+def check_food_name(engine, phone_number, name):
+    query_result = engine.execute(f"SELECT * FROM '{phone_number}' WHERE item_name = \"{name}\";").fetchall()
+    return query_result != []
 
 def get_food_to_expire(engine, phone_number):
     """Searches database and returns items set to expire within a week"""
