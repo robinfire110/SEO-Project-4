@@ -39,12 +39,10 @@
   </div>
 </main>
 <!-- partial -->
-<script> 
+<script text="type/javascript"> 
     //Variables
-    const dataString = '[[4, "2020-10-05 00:00:00", "Oranges"], [8, "2022-07-19 00:00:00", "Apples"], [9, "2022-07-23 00:00:00", "Beef"], [10, "2020-10-05 00:00:00", "Grapes"]]'
     const table = document.getElementById('table');
-    const data = JSON.parse(dataString);
-    console.log(data);
+    const data = {{ data|safe }}
 
     //Create Table
     for (i = 0; i < data.length; i++) {

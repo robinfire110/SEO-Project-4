@@ -4,12 +4,32 @@ from login import *
 from api import *
 from user_input import *
 import datetime
+from flask import Flask, render_template, url_for, flash, redirect, request
+from flask_behind_proxy import FlaskBehindProxy
+from flask_sqlalchemy import SQLAlchemy
 
+#Flask
+app = Flask(__name__)
+proxied = FlaskBehindProxy(app)  ## add this line
+#app.config['SECRET_KEY'] = '288c97cf1b11a5726d571d84ccc1f5f5'
+
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+#db = SQLAlchemy(app)
+
+phone_number = "4256471907"
+database = connect_database()
+
+@app.route("/dashboard", methods=['GET', 'POST'])
+def dashboard():
+    if phone_number != "":
+        data = database_to_json(database, phone_number)#'[[4, "2020-10-05 00:00:00", "Oranges"], [8, "2022-07-19 00:00:00", "Apples"], [9, "2022-07-23 00:00:00", "Beef"]]'
+        return render_template("dashboard.html", data=data)
+    else:
+        #REDIRECT TO LOGIN PAGE
+        pass
 
 def main():
-
-    phone_number = ""
-    database = connect_database()
+    """
     action = None
     while action not in (1, 2):
         print("Type 1 to log in and 2 to sign up")
@@ -64,32 +84,16 @@ def main():
         if name == "":
             break
         remove_food_item(database, phone_number, name)
+    
 
     
     
-    """
-    while(True):
-        next_job = prompt(program_options, style=custom_style_2).get("program")
-
-        if next_job == "Add item":
-            new_item = prompt(add_options, style=custom_style_2)
-            add_food_item(
-                database,
-                new_item.get("item_name"),
-                new_item.get("expiration_date")
-            )
-        elif next_job == "Remove item":
-            remove_item = prompt(remove_options, style=custom_style_2)
-            remove_food_item(database, remove_item.get("item_name"))
-        elif next_job == "List items":
-            print_database(database)
-        else:
-            break
-    """
     
     print_database(database, phone_number)
     #food = get_food_to_expire(database, phone_number)
     #sendMessage(phone_number, food)
-
+"""
+    pass
 if __name__ == "__main__":
     main()
+    app.run(debug=True, host="0.0.0.0")
