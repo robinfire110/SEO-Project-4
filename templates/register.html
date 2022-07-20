@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="main">
+    <p class="sign" align="center">Sign Up</p>
+    <form  method ="POST" class="form-register">
+      <!--<input class="phone" type="text" align="center" placeholder="Phone Number">-->
+           {{form.phonenumber.label()}}
+           {{form.phonenumber(class = "form-control")}}
+      <!--<input class="pass" type="password" align="center" placeholder="Password">-->
+          {{form.password.label()}}
+             {{form.password(class = "form-control")}}
+      <!--<a class="submit" align="center">Sign Up</a>-->
+      {{ form.submit(class="btn btn-outline-info") }}         
+    </div>
+
+{% endblock content %}

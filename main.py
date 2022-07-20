@@ -1,17 +1,17 @@
-
 from database import *
 from login import *
 from api import *
 from user_input import *
 import datetime
 from flask import Flask, render_template, url_for, flash, redirect, request
+from form import RegistrationForm
 from flask_behind_proxy import FlaskBehindProxy
 from flask_sqlalchemy import SQLAlchemy
 
 #Flask
 app = Flask(__name__)
 proxied = FlaskBehindProxy(app)  ## add this line
-#app.config['SECRET_KEY'] = '288c97cf1b11a5726d571d84ccc1f5f5'
+app.config['SECRET_KEY'] = '288c97cf1b11a5726d571d84ccc1f5f5'
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 #db = SQLAlchemy(app)
@@ -19,14 +19,57 @@ proxied = FlaskBehindProxy(app)  ## add this line
 phone_number = "4256471907"
 database = connect_database()
 
+# model that define what will be included in the database
+# db.model is the way that shows how our database will look like
+class User():
+    phonenumber = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+
+    # this is a magic method 
+    def __repr__(self):
+        return f"User('{self.phonenumber}' )"
+
+#Hana Register
+@app.route("/register", methods = ['GET','POST'])                          # this tells you the URL the method below is related to
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+            user = make_account(check_valid_phone(form.phonenumber.data), secure_password(form.password.data))
+            if user != False:
+                create_table(database, phone_number)
+                print(get_all_login_data())
+                flash(f'Account created for {form.phonenumber.data}!', 'success')
+                return redirect(url_for('login')) # if so - send to home page
+
+            #user = User(phonenumber=form.phonenumber.data, password=form.password.data)
+            #db.session.add(user)
+            #db.session.commit()
+            #result = request.form
+            #return render_template('user.html', result = result)
+            
+    return render_template('register.html', title='Register', form=form)        # this prints HTML to the webpage
+
+@app.route("/")
+@app.route("/index")
+@app.route("/home")
+def home():
+    return render_template("index.html")
+
+@app.route("/add")
+def add():
+    return render_template("additems.html")
+
+@app.route("/login", methods = ['GET','POST'])
+def login():
+    return render_template("login.html")
+
 @app.route("/dashboard", methods=['GET', 'POST'])
 def dashboard():
     if phone_number != "":
         data = database_to_json(database, phone_number)#'[[4, "2020-10-05 00:00:00", "Oranges"], [8, "2022-07-19 00:00:00", "Apples"], [9, "2022-07-23 00:00:00", "Beef"]]'
         return render_template("dashboard.html", data=data)
     else:
-        #REDIRECT TO LOGIN PAGE
-        pass
+        return redirect(url_for('login'))
 
 def main():
     """
