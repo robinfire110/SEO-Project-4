@@ -1,29 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
+<head>
+  <link href= "../static/css/styleTable.css" rel="stylesheet">
+</head>
 <!-- partial:index.partial.html -->
-<h1>
-  My Items
-</h1>
+<h11>
+  <center> My Items </center>
+</h11>
 <p>
 </p>
 <main>
   <table>
     <thead>
       <tr>
-        <th>
+        <th style="padding-left: 20px">
           Food Item
         </th>
-        <th>
+        <th style="padding-left: 30px">
           Expiration Date
         </th>
-        <th>Remove</th>
+        <th style="padding-left: 35px">Remove</th>
       </tr>
     </thead>
     <tbody id="table"></tbody>
     <tfoot>
       <tr>
         <th colspan='3'>
-          Notifood
+          <a class="button" href="/add"> Add item </a>
         </th>
       </tr>
     </tfoot>
@@ -58,10 +61,10 @@
 
 
       html = "";
-      html += `<tr>`;
-      html += `<td>${currentData[2]}</td>`;
-      html += `<td>${message}</td>`;
-      html += `<td><a class='button' id='${currentData[2]}' href='' onclick='deleteFood("${currentData[2]}")'>Remove</a></td>`;
+      html += `<tr >`;
+      html += `<td style="padding-left: 20px">${currentData[2]}</td>`;
+      html += `<td style="padding-left: 30px">${message}</td>`;
+      html += `<td style="padding-left: 35px"><a class='button' id='${currentData[2]}' href='' onclick='deleteFood("${currentData[2]}")'>Remove</a></td>`;
       html += `</tr>`;
 
       htmlArray.push([html, days_till_expiration]);
