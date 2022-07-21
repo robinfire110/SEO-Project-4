@@ -1,12 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="main">
-<p class="sign" align="center">Add a food item</p>
-<form class="form1">
-    <input class="un " type="text" align="center" placeholder="Food name">
-    <input class="pass" type="password" align="center" placeholder="Expiration date">
-    <a class="submit" align="center">Add</a>
-        
-            
+    <p class="sign" align="center">Add a food item</p>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <!--<input class="un " type="text" align="center" placeholder="Food name">-->
+            {{ form.name(class="un ", placeholder="Food Name", align="center") }}
+            {{ form.date(class="pass", placeholder="Expiration Date", align="center", id="date")}}
+            {{ form.submit(class="submit", align=center) }}
+            <!--<input class="pass" type="password" align="center" placeholder="Expiration date">-->
+            <!--<a class="submit" align="center">Add</a>-->   
+        </form>
 </div>
+
+<script>
+    //Set minimum date for the calender
+    let date_field = document.getElementById("date");
+    let today = new Date();
+    let day = today.getDate()
+    let month = today.getMonth()+1
+
+    //Get Formatting Right
+    if (month < 10) month = '0' + month.toString();
+    if (day < 10) day = '0' + day.toString();
+        
+    //Set
+    var string = today.getFullYear() + "-" + month + "-" + day;
+    date_field.setAttribute('min', string);
+    console.log(string)
+
+</script>
 {% endblock content %}
