@@ -95,24 +95,19 @@ if the phone number doesn't exist in our database (so you haven't signed up befo
 you will be prompted to try another phone number that has signed up or sign up now
 returns true if you sign up and false if you login
 """
-def log_in(phone_number):
+def log_in(phone_number, password):
     conn = sqlite3.connect('accounts.db')
-
     cursor = conn.cursor()
-
-    '''
-    if phone_number.isdigit():
-        print("Signing up . . .")
-        return sign_up(phone_number)
-    '''
+    print("LOGIN STARTED")
             
     try:
-        cursor.execute(
-            "SELECT PHONE FROM ACCOUNTS WHERE PHONE = ?", (phone_number,))
+        cursor.execute("SELECT PHONE FROM ACCOUNTS WHERE PHONE = ?", (phone_number))
         if len(cursor.fetchall()) < 1:
             raise Exception()
             return False
         else:
+            print(cursor.fetchall())
+            print(type(cursor.fetchall()))
             print("Login success")
             return phone_number
     except:
