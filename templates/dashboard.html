@@ -36,7 +36,8 @@
     const table = document.getElementById('table');
     const data = {{ data|safe }}
 
-    //Create Table
+    //Create Table HTML
+    htmlArray = []
     for (i = 0; i < data.length; i++) {
       currentData = data[i];
 
@@ -62,8 +63,19 @@
       html += `<td>${message}</td>`;
       html += `<td><a class='button' id='${currentData[2]}' href='' onclick='deleteFood("${currentData[2]}")'>Remove</a></td>`;
       html += `</tr>`;
-      table.innerHTML += html;  
-      //document.getElementById(`${currentData[2]}`).addEventListener("click", deleteFood(currentData[2]))
+
+      htmlArray.push([html, days_till_expiration]);
+    }
+
+    //Sort by date
+    htmlArray.sort(function(a, b) {
+      return a[1] - b[1];
+    });
+    console.log(htmlArray)
+
+    //Add to html
+    for (i = 0; i < data.length; i++) {
+      table.innerHTML += htmlArray[i][0];  
     }
 
     //Delete Request
