@@ -22,27 +22,31 @@
                     <span class="icon-bar"></span>
                 </button>
             </div>
-​
+​           <center><a href="/home"><img alt="Notifood" src="../static/images/logo.png" width="15%" height="15%" style=""></a></center>
             <div class="collapse navbar-collapse navbar-ex1-collapse">
+                
                 <ul class="nav navbar-nav">
                     <li>
                         <a href="/home"> Home </a>
                     </li>
+                    {% if login %}
                     <li>
                         <a href="/add"> Add Items </a>
                     </li>
                     <li>
                         <a href="/dashboard"> My Items </a>
                     </li>
+                    <li style="float: right;">
+                        <a style="float: right;" href="/logout"> Logout </a>
+                    </li>
+                    {% else %}
                     <li>
                         <a href="/login"> Log In</a>
                     </li>
                     <li>
                         <a href="/register"> Sign Up</a>
                     </li>
-                    <li style="float: right;">
-                        <a style="float: right;" href="/logout"> Logout </a>
-                    </li>
+                    {% endif %}
                 </ul>
             </div>	<!-- .navbar-collapse -->
         </div>		<!-- .container -->
@@ -79,6 +83,9 @@
     <script src="../static/js/jquery.easing.min.js"></script>
     <script src="../static/js/sticky-menu.js"></script>
 ​
+
+
 </body>
+
 ​
 </html>

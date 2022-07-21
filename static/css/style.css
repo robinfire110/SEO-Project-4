@@ -377,3 +377,12 @@ dd {
     padding: 10px;
   }
 }
+
+.Footer {
+  width: 100%;
+  background-color: #FFF;
+  position: relative;
+  right: 0;
+  bottom: 0;
+  height: 6.5%;
+}

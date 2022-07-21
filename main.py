@@ -42,11 +42,15 @@ class User(UserMixin, db.Model):
 @app.route("/index")
 @app.route("/home")
 def home():
-    return render_template("index.html")
+    return render_template("index.html", title="Home", login=current_user.is_authenticated)
 
 #Hana Register
 @app.route("/register", methods = ['GET','POST'])                          # this tells you the URL the method below is related to
 def register():
+    #Send to Dashboard if logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+
     form = RegistrationForm()
     if form.validate_on_submit():
         if User.query.filter_by(phonenumber=form.phonenumber.data).first():
@@ -62,11 +66,15 @@ def register():
     if form.errors != {}:
         for err_msg in form.errors.values():
             flash(f'Error with creating user:{err_msg}', catagory = 'danger')
-    return render_template('register.html', title='Register', form=form) 
+    return render_template('register.html', title='Register', form=form, login=current_user.is_authenticated) 
 
 
 @app.route("/login", methods = ['GET','POST'])
 def login():
+    #Send to Dashboard if logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+
     #https://www.digitalocean.com/community/tutorials/how-to-add-authentication-to-your-app-with-flask-login
     form = LoginForm()
     if form.validate_on_submit():
@@ -82,15 +90,7 @@ def login():
             return redirect(url_for('login')) 
         else:
             login_user(check_user, remember=True)
-            
-            try:
-                sendMessage(phonenumber, get_food_to_expire(database, phonenumber))
-            except:
-                print("Unable to send message")
-            return redirect(url_for('dashboard'))
-
-
-    return render_template("login.html", title = "Log-In", form=form)
+    return render_template("login.html", title = "Log-In", form=form, login=current_user.is_authenticated)
 
 @app.route("/logout")
 @login_required
@@ -112,16 +112,26 @@ def add():
         #Add to database
         if not check_food_name(database, current_user.phonenumber, name):
             add_food_item(database, current_user.phonenumber, name, date)
+
+            #SMS
+            try:
+                food_list = get_food_to_expire(database, current_user.phonenumber)
+                if food_list == []:
+                    sendMessage(current_user.phonenumber, food_list)
+            except:
+                print("Unable to send message")
+            return redirect(url_for('dashboard'))
+
             return redirect(url_for('add'))
         else:
             flash("An item with this name already exists, please try again.")
-    return render_template("additems.html", title='Add Food', form=form)
+    return render_template("additems.html", title='Add Food', form=form, login=current_user.is_authenticated)
 
 @app.route("/dashboard", methods=['GET', 'POST'])
 @login_required
 def dashboard():    
     data = database_to_json(database, current_user.phonenumber)#'[[4, "2020-10-05 00:00:00", "Oranges"], [8, "2022-07-19 00:00:00", "Apples"], [9, "2022-07-23 00:00:00", "Beef"]]'
-    return render_template("dashboard.html", data=data)
+    return render_template("dashboard.html", data=data, login=current_user.is_authenticated)
 
 @app.route('/dashboard/delete/<id>', methods=['DELETE'])
 @login_required

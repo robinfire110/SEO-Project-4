@@ -11,14 +11,6 @@ def sendMessage(phone_number, food_list):
         messageStr = ""
         
         for food_item in food_list:
-            messageStr += f"""
-                The item {food_item[0]} is about to expire 
-                in {food_item[1]} days ({food_item[2]})\n
-            """
-
-        message = client.messages.create(
-            to = f"{phone_number}",
-            from_ = "+19707164530",
-            body = f"{messageStr}")
-        
+            messageStr += f"The item {food_item[0]} is about to expire in {food_item[1]} days ({food_item[2]})\n"
+        message = client.messages.create(to = f"{phone_number}", from_ = "+19707164530", body = f"{messageStr}")
         print(message.sid)
