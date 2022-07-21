@@ -50,6 +50,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         if User.query.filter_by(phonenumber=form.phonenumber.data).first():
+            flash(f'Account with phone number {form.phonenumber.data} already exists. Please log in instead')
             return redirect(url_for('register'))
         else:
             user = User(phonenumber=form.phonenumber.data, password=form.password.data)
@@ -58,7 +59,11 @@ def register():
             create_table(database, form.phonenumber.data)
             flash(f'Account created for {form.phonenumber.data}!', 'success')
             return redirect(url_for('login')) # if so - send to home page
+    if form.errors != {}:
+        for err_msg in form.errors.values():
+            flash(f'Error with creating user:{err_msg}', catagory = 'danger')
     return render_template('register.html', title='Register', form=form) 
+
 
 @app.route("/login", methods = ['GET','POST'])
 def login():
@@ -81,6 +86,7 @@ def login():
             try:
                 sendMessage(phonenumber, get_food_to_expire(database, phonenumber))
             except:
+                print("Unable to send message")
             return redirect(url_for('dashboard'))
 
 
