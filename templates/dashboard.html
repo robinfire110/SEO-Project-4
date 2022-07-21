@@ -39,10 +39,27 @@
     //Create Table
     for (i = 0; i < data.length; i++) {
       currentData = data[i];
+
+      //Get Date
+      let dateArray = currentData[1].replace(" 00:00:00", "").split("-")
+      console.log(dateArray)
+      let currentDate = new Date()
+      let expirationDate = new Date(dateArray[0], dateArray[1]-1, dateArray[2])
+      let days_till_expiration = (expirationDate.getTime()-currentDate.getTime())/(1000*60*60*24)
+
+      //Get Message
+      let message = "";
+      if (days_till_expiration <= 0) message = "Expired";
+      else if (days_till_expiration >= 1 && days_till_expiration < 2) message = "Expires today";
+      else if (days_till_expiration >= 2 && days_till_expiration < 30) message = "Expires in " + Math.ceil(days_till_expiration) + " days";
+      else if (days_till_expiration >= 31 && days_till_expiration < 364) message = "Expires in more than a month";
+      else if (days_till_expiration >= 365) message = "Expires in more than a year";
+
+
       html = "";
       html += `<tr>`;
       html += `<td>${currentData[2]}</td>`;
-      html += `<td>${(currentData[1]).replace(" 00:00:00", "")}</td>`;
+      html += `<td>${message}</td>`;
       html += `<td><a class='button' id='${currentData[2]}' href='' onclick='deleteFood("${currentData[2]}")'>Remove</a></td>`;
       html += `</tr>`;
       table.innerHTML += html;  
