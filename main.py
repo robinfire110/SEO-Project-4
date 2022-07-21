@@ -4,7 +4,7 @@ from api import *
 from user_input import *
 import datetime
 from flask import Flask, render_template, url_for, flash, redirect, request
-from form import RegistrationForm, LoginForm
+from form import RegistrationForm, LoginForm, AddFoodForm, DeleteFoodForm
 from flask_behind_proxy import FlaskBehindProxy
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_required, current_user, login_user, logout_user
@@ -25,7 +25,6 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 #Connect to food database
-phone_number = "4256471907"
 database = connect_database()
 
 # model that define what will be included in the database
@@ -56,6 +55,7 @@ def register():
             user = User(phonenumber=form.phonenumber.data, password=form.password.data)
             db.session.add(user)
             db.session.commit()
+            create_table(database, form.phonenumber.data)
             flash(f'Account created for {form.phonenumber.data}!', 'success')
             return redirect(url_for('login')) # if so - send to home page
     return render_template('register.html', title='Register', form=form) 
@@ -69,6 +69,7 @@ def login():
         phonenumber = form.phonenumber.data
         password = form.password.data
 
+
         #Confirm data
         check_user = User.query.filter_by(phonenumber=phonenumber).first()
         if not check_user or not check_user.password == password:
@@ -76,6 +77,10 @@ def login():
             return redirect(url_for('login')) 
         else:
             login_user(check_user, remember=True)
+            
+            try:
+                sendMessage(phonenumber, get_food_to_expire(database, phonenumber))
+            except:
             return redirect(url_for('dashboard'))
 
 
@@ -87,19 +92,39 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route("/add")
+@app.route("/add", methods=['GET', 'POST'])
 @login_required
-def add():    
-    return render_template("additems.html")
+def add():  
+    form = AddFoodForm()
+    if form.validate_on_submit():  
+        #Get Data
+        name = form.name.data
+        date = form.date.data
+        date = str(date).split("-")
+        date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
+        
+        #Add to database
+        if not check_food_name(database, current_user.phonenumber, name):
+            add_food_item(database, current_user.phonenumber, name, date)
+            return redirect(url_for('add'))
+        else:
+            flash("An item with this name already exists, please try again.")
+    return render_template("additems.html", title='Add Food', form=form)
 
 @app.route("/dashboard", methods=['GET', 'POST'])
 @login_required
-def dashboard():
-    if phone_number != "":
-        data = database_to_json(database, current_user.phonenumber)#'[[4, "2020-10-05 00:00:00", "Oranges"], [8, "2022-07-19 00:00:00", "Apples"], [9, "2022-07-23 00:00:00", "Beef"]]'
-        return render_template("dashboard.html", data=data)
-    else:
-        return redirect(url_for('login'))
+def dashboard():    
+    data = database_to_json(database, current_user.phonenumber)#'[[4, "2020-10-05 00:00:00", "Oranges"], [8, "2022-07-19 00:00:00", "Apples"], [9, "2022-07-23 00:00:00", "Beef"]]'
+    return render_template("dashboard.html", data=data)
+
+@app.route('/dashboard/delete/<id>', methods=['DELETE'])
+@login_required
+def delete_food(id):
+    print(id)
+    remove_food_item(database, current_user.phonenumber, id)
+    return id
+    
+
 
 def main():
     """
